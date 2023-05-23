@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>瀑布流</title>
+    <style>
+      html{
+        width: 100%;
+        height: 100%;
+      }
+      body{
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+      .list {
+        width: 100%;
+        position: relative;
+        list-style: none;
+        height: 1000px;
+        overflow-y: scroll;
+        padding: 0;
+        margin: 0;
+      }
+      .list-item{
+        overflow: hidden;
+      }
+      .list-item img {
+        width: 100%;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="list">
+      <li class="list-item">
+        <img
+          src="https://img2.baidu.com/it/u=3334115308,1054927257&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500"
+          alt=""
+        />
+      </li>
+      <li class="list-item">
+        <img
+          src="https://img2.baidu.com/it/u=2988589017,2923917558&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800"
+          alt=""
+        />
+      </li>
+      <li class="list-item">
+        <img
+          src="https://img2.baidu.com/it/u=2243573419,589412055&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500"
+          alt=""
+        />
+      </li>
+      <li class="list-item">
+        <img
+          src="https://img2.baidu.com/it/u=3902309251,2849519907&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889"
+          alt=""
+        />
+      </li>
+      <li class="list-item">
+        <img
+          src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201702%2F05%2F20170205213628_dj3ic.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1682648912&t=185a3d75a4ae0c992dbfd855fd595980"
+          alt=""
+        />
+      </li>
+      <li class="list-item">
+        <img
+          src="https://img2.baidu.com/it/u=3334115308,1054927257&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500"
+          alt=""
+        />
+      </li>
+      <li class="list-item">
+        <img
+          src="https://img2.baidu.com/it/u=2988589017,2923917558&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800"
+          alt=""
+        />
+      </li>
+      <li class="list-item">
+        <img
+          src="https://img2.baidu.com/it/u=2243573419,589412055&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500"
+          alt=""
+        />
+      </li>
+      <li class="list-item">
+        <img
+          src="https://img2.baidu.com/it/u=3902309251,2849519907&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889"
+          alt=""
+        />
+      </li>
+      <li class="list-item">
+        <img
+          src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201702%2F05%2F20170205213628_dj3ic.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1682648912&t=185a3d75a4ae0c992dbfd855fd595980"
+          alt=""
+        />
+      </li>
+    </ul>
+    <script src="./waterfall.js" type="module"></script>
+    <script src="./index.js" type="module"></script>
+  </body>
+</html>
