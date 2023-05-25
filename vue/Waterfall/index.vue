@@ -10,7 +10,7 @@
     ref="waterfall"
   >
     <div
-      :class="itemStyle || 'item'"
+      :class="itemClassName || 'waterfall-container-item'"
       v-for="(item, index) in list"
       :key="item[itemKey]"
       :style="itemStyle"
@@ -25,19 +25,62 @@
 import { CSSProperties, defineProps, reactive, ref, withDefaults } from "vue";
 
 type WaterfallProps = {
+  /**
+   * @description 列表数据
+   */
   list: any[];
+  /**
+   * @description 列表渲染的唯一key（会从列表数据中取该字段，如果列表中没有该字段，默认使用id）
+   * @default id
+   */
   itemKey?: string;
-  wrapperWidth?: number;
-  wrapperClassName?: string;
-  itemClassName?: string;
-  wrapperStyle?: CSSProperties;
-  itemStyle?: CSSProperties;
+  /**
+   * @description 列数，默认4列
+   * @default 4
+   */
   count?: number;
+  /**
+   * @description 列与列之间的间隙（包括上下间隙，单位px）
+   * @default 10
+   */
   gap?: number;
+  /**
+   * @description 列表项中的图片class类名，目前仅支持图片宽度100%的情况，仅能有一个图片，默认会使用querySelector获取“img”元素
+   */
+  imgClassName?: string;
+  /**
+   * @description 容器的宽度（单位px，如果需要其他单位的宽度，请使用wrapperStyle属性手动修改容器宽度），默认值为100%
+   * @default 100%
+   */
+  wrapperWidth?: number;
+  /**
+   * @description 容器的class类名
+   * @default waterfall-container
+   */
+  wrapperClassName?: string;
+  /**
+   * @description 列表项的class类名
+   * @default waterfall-container-item
+   */
+  itemClassName?: string;
+  /**
+   * @description 容器的style
+   */
+  wrapperStyle?: CSSProperties;
+  /**
+   * @description 列表项的style
+   */
+  itemStyle?: CSSProperties;
 };
 
 type State = {
+  /**
+   * @description 列宽度
+   */
   columnWidth: number;
+  /**
+   * @description 每一列的高度
+   */
   columnHeights: number[];
 };
 
@@ -52,8 +95,12 @@ const state = reactive<State>({
   columnHeights: new Array(props.count).fill(0),
 });
 
-const waterfall = ref<HTMLElement | null>(null);
+const waterfall = ref<HTMLElement | null>(null); // 瀑布流容器
 
+/**
+ * @description 更新列宽度
+ * @param el HTMLElement 列表项元素
+ */
 const setColumnWidth = (el: HTMLElement) => {
   const wrapperWidth = props.wrapperWidth || el?.clientWidth; // 获取容器宽度
   const containerWidth = wrapperWidth - (props.count - 1) * props.gap; // 计算最终容器宽度
@@ -61,11 +108,16 @@ const setColumnWidth = (el: HTMLElement) => {
   return state.columnWidth;
 };
 
+/**
+ * @description 获取最小高度的列
+ */
 const getMinItemHeight = () => {
   const index = state.columnHeights.indexOf(Math.min(...state.columnHeights));
   return { index, height: state.columnHeights[index] };
 };
-
+/**
+ * @description 获取最大高度的列
+ */
 const getMaxItemHeight = () => {
   const index = state.columnHeights.indexOf(Math.max(...state.columnHeights));
   return { index, height: state.columnHeights[index] };
@@ -79,7 +131,12 @@ const vUpdatePosition = {
   },
 };
 
+/**
+ * @description 设置列表项样式
+ * @param el HTMLElement 列表项元素
+ */
 const setItemStyle = (el: HTMLElement) => {
+  el.style.width = state.columnWidth + "px"; // 设置列宽度
   const itemHeight =
     (el.clientHeight * state.columnWidth) / el.clientWidth + props.gap;
 
@@ -92,6 +149,10 @@ const setItemStyle = (el: HTMLElement) => {
   el.style.visibility = "visible";
 };
 
+/**
+ * @description 设置图片样式
+ * @param img HTMLImageElement 图片元素
+ */
 const setImgStyle = (img: HTMLImageElement) => {
   const imgHeight =
     (img.clientHeight * state.columnWidth) / img.clientWidth + props.gap;
@@ -99,35 +160,45 @@ const setImgStyle = (img: HTMLImageElement) => {
   img.style.width = "100%";
 };
 
+/**
+ * @description 设置容器高度
+ */
 const setWrapperHeight = () => {
   const { height: maxHeight } = getMaxItemHeight();
   if (waterfall.value) waterfall.value.style.height = maxHeight + "px";
 };
 
+/**
+ * @description 更新位置
+ * @param el HTMLElement 列表项元素
+ */
 const updatePosition = (el: HTMLElement) => {
   const containerElement = document.querySelector("#waterfall-container");
   setColumnWidth(containerElement as HTMLElement);
 
-  el.style.width = state.columnWidth + "px"; // 设置宽度
-
-  const img = el.querySelector("img");
-  if (!img) {
-    setItemStyle(el);
-    setWrapperHeight();
-    return;
+  const img = el.querySelector(props.imgClassName || "img");
+  if (!(img instanceof HTMLImageElement)) {
+    throw new Error("图片元素不存在，请检查图片class是否正确");
   }
-  if (img?.complete) {
-    // 如果图片已经加载完成
-    setImgStyle(img); // 设置图片样式
+  if (!img) {
+    // 如果没有图片
     setItemStyle(el);
     setWrapperHeight();
   } else {
-    // 如果图片未加载完成
-    img?.addEventListener("load", () => {
-      setImgStyle(img);
+    // 如果有图片
+    if (img?.complete) {
+      // 如果图片已经加载完成
+      setImgStyle(img); // 设置图片样式
       setItemStyle(el);
       setWrapperHeight();
-    });
+    } else {
+      // 如果图片未加载完成
+      img?.addEventListener("load", () => {
+        setImgStyle(img);
+        setItemStyle(el);
+        setWrapperHeight();
+      });
+    }
   }
 };
 </script>
@@ -136,7 +207,7 @@ const updatePosition = (el: HTMLElement) => {
 .waterfall-container {
   width: 100%;
 }
-.waterfall-container .item {
+.waterfall-container .waterfall-container-item {
   transition: all 0.3s;
   position: absolute;
   visibility: hidden;
