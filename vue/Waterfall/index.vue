@@ -13,7 +13,7 @@
       :class="itemClassName || 'waterfall-container-item'"
       v-for="(item, index) in list"
       :key="item[itemKey]"
-      :style="itemStyle"
+      :style="{ ...itemStyle, position: 'absolute' }"
       v-update-position="(el: HTMLElement) => updatePosition(el)"
     >
       <slot :item="item" :index="index"></slot>
@@ -22,7 +22,16 @@
 </template>
 
 <script setup lang="ts">
-import { CSSProperties, defineProps, reactive, ref, withDefaults } from "vue";
+import {
+  CSSProperties,
+  computed,
+  defineProps,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+  withDefaults,
+} from "vue";
 
 type WaterfallProps = {
   /**
@@ -90,9 +99,11 @@ const props = withDefaults(defineProps<WaterfallProps>(), {
   gap: 10,
 });
 
+const count = computed(() => props.count <= 0 ? 0 : props.count);
+
 const state = reactive<State>({
   columnWidth: 0,
-  columnHeights: new Array(props.count).fill(0),
+  columnHeights: new Array(count.value).fill(0),
 });
 
 const waterfall = ref<HTMLElement | null>(null); // 瀑布流容器
@@ -103,9 +114,8 @@ const waterfall = ref<HTMLElement | null>(null); // 瀑布流容器
  */
 const setColumnWidth = (el: HTMLElement) => {
   const wrapperWidth = props.wrapperWidth || el?.clientWidth; // 获取容器宽度
-  const containerWidth = wrapperWidth - (props.count - 1) * props.gap; // 计算最终容器宽度
-  state.columnWidth = containerWidth / props.count; // 计算列宽度
-  return state.columnWidth;
+  const containerWidth = wrapperWidth - (count.value - 1) * props.gap; // 计算最终容器宽度
+  state.columnWidth = containerWidth / count.value; // 计算列宽度
 };
 
 /**
@@ -129,6 +139,10 @@ const vUpdatePosition = {
     const callback = binding.value;
     callback(el);
   },
+  updateMounted(el: HTMLElement, binding: any) {
+    const callback = binding.value;
+    callback(el);
+  },
 };
 
 /**
@@ -137,15 +151,13 @@ const vUpdatePosition = {
  */
 const setItemStyle = (el: HTMLElement) => {
   el.style.width = state.columnWidth + "px"; // 设置列宽度
-  const itemHeight =
-    (el.clientHeight * state.columnWidth) / el.clientWidth + props.gap;
+  const itemHeight = (el.clientHeight * state.columnWidth) / el.clientWidth; // 计算元素高度
 
   let { height: minHeight, index: minIndex } = getMinItemHeight(); //找到最小高度的列
   el.style.top = minHeight + "px";
-  el.style.height = itemHeight + "px";
   el.style.left = minIndex * (state.columnWidth + props.gap) + "px";
 
-  state.columnHeights[minIndex] += itemHeight;
+  state.columnHeights[minIndex] += itemHeight + props.gap;
   el.style.visibility = "visible";
 };
 
@@ -154,9 +166,6 @@ const setItemStyle = (el: HTMLElement) => {
  * @param img HTMLImageElement 图片元素
  */
 const setImgStyle = (img: HTMLImageElement) => {
-  const imgHeight =
-    (img.clientHeight * state.columnWidth) / img.clientWidth + props.gap;
-  img.style.height = imgHeight + "px";
   img.style.width = "100%";
 };
 
@@ -173,14 +182,8 @@ const setWrapperHeight = () => {
  * @param el HTMLElement 列表项元素
  */
 const updatePosition = (el: HTMLElement) => {
-  const containerElement = document.querySelector("#waterfall-container");
-  setColumnWidth(containerElement as HTMLElement);
-
   const img = el.querySelector(props.imgClassName || "img");
-  if (!(img instanceof HTMLImageElement)) {
-    throw new Error("图片元素不存在，请检查图片class是否正确");
-  }
-  if (!img) {
+  if (!img || !(img instanceof HTMLImageElement)) {
     // 如果没有图片
     setItemStyle(el);
     setWrapperHeight();
@@ -193,7 +196,7 @@ const updatePosition = (el: HTMLElement) => {
       setWrapperHeight();
     } else {
       // 如果图片未加载完成
-      img?.addEventListener("load", () => {
+      img?.addEventListener("load", async () => {
         setImgStyle(img);
         setItemStyle(el);
         setWrapperHeight();
@@ -201,6 +204,37 @@ const updatePosition = (el: HTMLElement) => {
     }
   }
 };
+
+onMounted(() => {
+  setColumnWidth(waterfall.value as HTMLElement);
+});
+
+/**
+ * @description 重置
+ */
+const reset = () => {
+  state.columnHeights = new Array(count.value).fill(0);
+  setColumnWidth(waterfall.value as HTMLElement);
+};
+
+/**
+ * @description 重新渲染
+ */
+const rerender = () => {
+  reset();
+  const containerElement = waterfall.value;
+  const items = [...(containerElement?.children as any)];
+  items?.forEach((item) => {
+    updatePosition(item as HTMLElement);
+  });
+};
+
+watch(
+  () => count.value,
+  () => {
+    rerender();
+  },
+);
 </script>
 
 <style scoped>
@@ -208,8 +242,9 @@ const updatePosition = (el: HTMLElement) => {
   width: 100%;
 }
 .waterfall-container .waterfall-container-item {
-  transition: all 0.3s;
-  position: absolute;
+  transition-duration: 0.3s;
+  transition-property: left, top ;
+  overflow: auto;
   visibility: hidden;
 }
 </style>
