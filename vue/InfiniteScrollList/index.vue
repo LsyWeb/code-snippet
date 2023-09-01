@@ -37,7 +37,6 @@ type InfiniteScrollListProps = {
   list: T[];
   /**
    * @description: 滚动方向
-   * 可以是数字（单位px）或者其他自定义单位
    */
   direction?: "vertical" | "horizontal";
   /**
