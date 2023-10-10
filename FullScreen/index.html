@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="content">
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
+        aliquam, dolore quisquam sunt minus totam eaque aut odio voluptatem.
+        Corporis nemo culpa illum laboriosam aut repellendus sint assumenda
+        reprehenderit doloribus.
+      </p>
+
+      <button id="toogle">toogle</button>
+      <button id="enter">enter</button>
+      <button id="exit">exit</button>
+    </div>
+
+    <script type="module">
+      import FullScreen from "./index.js";
+
+      const content = document.querySelector(".content");
+      const toogle = document.querySelector("#toogle");
+      const enter = document.querySelector("#enter");
+      const exit = document.querySelector("#exit");
+
+      const fullScreen = new FullScreen(content);
+
+      toogle.addEventListener("click", () => {
+        fullScreen.toogle();
+      });
+
+      enter.addEventListener("click", () => {
+        fullScreen.enter();
+      });
+
+      exit.addEventListener("click", () => {
+        fullScreen.exit();
+      });
+    </script>
+  </body>
+</html>
