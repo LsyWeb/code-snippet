@@ -3,7 +3,7 @@ function compressImage(
   maxWidth: number,
   maxHeight: number,
   maxSizeInMB: number,
-  quality: number = 0.8,
+  quality: number = 0.92,
 ): Promise<Blob | null> {
   return new Promise((resolve, reject) => {
     if (!file) {
@@ -34,7 +34,8 @@ function compressImage(
           let newHeight = image.height;
 
           // 只有当图片的宽度和高度都大于最大值时才需要进行调整
-          if (newWidth > maxWidth && newHeight > maxHeight) {
+          const isExceed = newWidth > maxWidth && newHeight > maxHeight;
+          if (isExceed) {
             if (newWidth < newHeight) {
               newWidth = maxWidth;
               newHeight = (image.height * maxWidth) / image.width;
@@ -42,9 +43,6 @@ function compressImage(
               newHeight = maxHeight;
               newWidth = (image.width * maxHeight) / image.height;
             }
-          } else {
-            resolve(file);
-            return;
           }
 
           // 设置 Canvas 大小并绘制图片
@@ -64,15 +62,13 @@ function compressImage(
               // 检查 Blob 大小是否小于指定的大小限制
               if (blob.size > maxSizeInMB * 1024 * 1024) {
                 console.error("压缩后图片大小仍然超过目标大小");
-                resolve(null);
-                return;
               }
 
               // 返回压缩后的 Blob
               resolve(blob);
             },
             "image/jpeg",
-            quality,
+             quality,
           ); // quality 是 JPEG 压缩质量，可以根据需要调整
         };
       }

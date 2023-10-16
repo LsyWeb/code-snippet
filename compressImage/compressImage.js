@@ -1,13 +1,8 @@
-function compressImage(file, maxWidth, maxHeight, maxSizeInMB, quality = 0.8) {
+function compressImage(file, maxWidth, maxHeight, maxSizeInMB, quality = 0.92) {
   return new Promise((resolve, reject) => {
     if (!file) {
       console.error("未选择文件");
       reject("未选择文件");
-      return;
-    }
-
-    if (file.size <= maxSizeInMB * 1024 * 1024) {
-      resolve(file);
       return;
     }
 
@@ -32,7 +27,7 @@ function compressImage(file, maxWidth, maxHeight, maxSizeInMB, quality = 0.8) {
           let newWidth = image.width;
           let newHeight = image.height;
 
-          // 只有当图片的宽度和高度都大于最大值时才需要进行调整
+          // 只有当图片的宽度和高度都大于最大值时才需要进行分辨率的调整
           if (newWidth > maxWidth && newHeight > maxHeight) {
             if (newWidth < newHeight) {
               newWidth = maxWidth;
@@ -41,9 +36,6 @@ function compressImage(file, maxWidth, maxHeight, maxSizeInMB, quality = 0.8) {
               newHeight = maxHeight;
               newWidth = (image.width * maxHeight) / image.height;
             }
-          } else {
-            resolve(file);
-            return;
           }
           console.log(newWidth, newHeight);
 
@@ -64,8 +56,6 @@ function compressImage(file, maxWidth, maxHeight, maxSizeInMB, quality = 0.8) {
               // 检查 Blob 大小是否小于指定的大小限制
               if (blob.size > maxSizeInMB * 1024 * 1024) {
                 console.error("压缩后图片大小仍然超过目标大小");
-                resolve(null);
-                return;
               }
 
               // 返回压缩后的 Blob

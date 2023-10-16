@@ -17,11 +17,21 @@
       <button id="toogle">toogle</button>
       <button id="enter">enter</button>
       <button id="exit">exit</button>
+      <input id="file" type="file">
     </div>
 
     <script type="module">
       import FullScreen from "./index.js";
-
+      import compressImage from '../compressImage/compressImage.js'
+      document.querySelector('#file').addEventListener('change', async (e) => {
+        const file = e.target.files[0]
+        const blob = await compressImage(file,1080,1080,2,0.92)
+        console.log(blob,'blob')
+        console.log('size',blob.size / 1024 / 1024)
+        const img = document.createElement('img')
+        img.src = URL.createObjectURL(blob)
+        document.body.appendChild(img)
+      })
       const content = document.querySelector(".content");
       const toogle = document.querySelector("#toogle");
       const enter = document.querySelector("#enter");
