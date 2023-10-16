@@ -1,0 +1,36 @@
+.stepsContainer {
+  width: 100%;
+  overflow-x: hidden;
+  height: 100%;
+  :global {
+    .wrapper {
+      display: inline-flex;
+      transition: all 0.3s;
+      height: 100%;
+      overflow-y: hidden;
+      .item {
+        flex: 0 0 auto;
+        overflow-y: auto;
+        padding: 16px;
+        background-color: #fff9ea;
+      }
+    }
+    .prev-btn {
+      padding-left: 38px;
+      padding-right: 38px;
+      background-color: transparent;
+      border-color: rgba(0, 0, 0, 0.9);
+    }
+    .next-btn {
+      width: 218px;
+    }
+    .adm-form-footer {
+      padding: 16px 0;
+    }
+    .adm-button {
+      border-radius: 8px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+  }
+}
