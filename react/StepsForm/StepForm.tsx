@@ -15,6 +15,7 @@ type SetpFormProps = {
    */
   onFinish?: (values: any) => Promise<boolean>;
 } & FormProps;
+
 export const StepForm = ({ children, onFinish, ...props }: SetpFormProps) => {
   const {
     currentIndex,
@@ -24,6 +25,7 @@ export const StepForm = ({ children, onFinish, ...props }: SetpFormProps) => {
     setCurrentIndex,
     onLastFinish,
   } = useContext(StepsFormContext);
+  
   const [loading, setLoading] = useState<boolean>(false);
 
   return (

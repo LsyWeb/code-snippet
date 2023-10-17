@@ -7,12 +7,12 @@
 
 ```jsx
 <StepsForm
-  defaultCurrent={step}
+  defaultCurrent={0}
   onFinish={async (values) => {
     console.log("所有步骤完成", values);
   }}
 >
-  <StepForm
+  <StepsForm.StepForm
     onFinish={async (values) => {
       console.log("第一步完成", "values");
       await delay(2000);
@@ -20,17 +20,17 @@
     }}
   >
     第一步表单
-  </StepForm>
-  <StepForm
+  </StepsForm.StepForm>
+  <StepsForm.StepForm
     onFinish={async (values) => {
       console.log("第2步完成", "values");
       await delay(2000);
-      return true;
+      return false; // 返回false则不会进入下一步
     }}
   >
     第二步表单
-  </StepForm>
+  </StepsForm.StepForm>
 
-  <StepForm>第三步表单</StepForm>
+  <StepsForm.StepForm>第三步表单</StepsForm.StepForm>
 </StepsForm>
 ```

@@ -37,5 +37,7 @@ const StepsFormContext = React.createContext<StepsFormContextType>({
   values: undefined,
   currentIndex: 0,
 })
+
 export const { Provider: StepsFormProvider } = StepsFormContext
+
 export default StepsFormContext

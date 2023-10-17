@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState, ReactNode } from "react";
 import styles from "./index.module.scss";
 import { StepsFormProvider } from "./context";
-import StepForm from "./SetpForm";
+import StepForm from "./StepForm";
 
 type StepsFormProps = {
+  /**
+   * 表单内容，每个子元素需要时一个StepForm组件
+   */
   children: ReactNode;
   /**
    * 默认初始显示第几步
