@@ -7,7 +7,7 @@
 - [hook](./vue/hook)
 - [无限滚动](./vue/InfiniteScrollList/index.vue)
 - [瀑布流](./vue/Waterfall)
-- [文本省略](./TextEllipsis/)
+- [文本省略](./vue/TextEllipsis/)
 
 ## 装饰器
 - [字段类型验证](./decorators/validate.ts)
