@@ -23,3 +23,6 @@
 
 ## 瀑布流
 [waterfall](./waterfall/core/waterfall.js)
+
+## 手写Promise
+[MyPromise](./Promise/MyPromise)
