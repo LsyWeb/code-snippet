@@ -1,14 +1,36 @@
-function compressImage(
-  file: File,
-  maxWidth: number,
-  maxHeight: number,
-  maxSizeInMB: number,
-  quality: number = 0.92,
-): Promise<Blob | null> {
+export type CompressImageOptions = {
+  /**
+   * 最大宽度
+   */
+  maxWidth?: number;
+  /**
+   * 最大高度
+   */
+  maxHeight?: number;
+  /**
+   * 图片质量，仅有 image/jpeg 和 image/webp 类型时才有效
+   */
+  quality?: number;
+  /**
+   * 图片类型, 默认为 image/jpeg，可选值为 image/png，image/webp；如果是 image/png，则quality参数无效，只能通过宽高来进行压缩
+   */
+  imageType?: 'image/jpeg' | 'image/png' | 'image/webp';
+};
+
+/**
+ * 压缩图片
+ */
+function compressImage(file: File, options?: CompressImageOptions): Promise<Blob | null> {
+  const {
+    maxWidth = 1080,
+    maxHeight = 1080,
+    quality = 0.92,
+    imageType = 'image/jpeg',
+  } = options || {};
   return new Promise((resolve, reject) => {
     if (!file) {
-      console.error("未选择文件");
-      reject("未选择文件");
+      console.error('未选择文件');
+      reject('未选择文件');
       return;
     }
 
@@ -20,12 +42,12 @@ function compressImage(
         image.src = e.target.result as string;
 
         image.onload = () => {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
 
           if (!ctx) {
-            console.error("无法获取 Canvas 上下文");
-            reject("无法获取 Canvas 上下文");
+            console.error('无法获取 Canvas 上下文');
+            reject('无法获取 Canvas 上下文');
             return;
           }
 
@@ -33,9 +55,8 @@ function compressImage(
           let newWidth = image.width;
           let newHeight = image.height;
 
-          // 只有当图片的宽度和高度都大于最大值时才需要进行调整
-          const isExceed = newWidth > maxWidth && newHeight > maxHeight;
-          if (isExceed) {
+          // 只有当图片的宽度和高度都大于最大值时才需要进行分辨率的调整
+          if (newWidth > maxWidth && newHeight > maxHeight) {
             if (newWidth < newHeight) {
               newWidth = maxWidth;
               newHeight = (image.height * maxWidth) / image.width;
@@ -54,21 +75,16 @@ function compressImage(
           canvas.toBlob(
             async (blob) => {
               if (!blob) {
-                console.error("无法生成 Blob 对象");
-                reject("无法生成 Blob 对象");
+                console.error('无法生成 Blob 对象');
+                reject('无法生成 Blob 对象');
                 return;
-              }
-
-              // 检查 Blob 大小是否小于指定的大小限制
-              if (blob.size > maxSizeInMB * 1024 * 1024) {
-                console.error("压缩后图片大小仍然超过目标大小");
               }
 
               // 返回压缩后的 Blob
               resolve(blob);
             },
-            "image/jpeg",
-             quality,
+            imageType,
+            quality,
           ); // quality 是 JPEG 压缩质量，可以根据需要调整
         };
       }
@@ -79,18 +95,3 @@ function compressImage(
 }
 
 export default compressImage;
-
-// 示例使用方法
-const fileInput = document.getElementById("fileInput") as HTMLInputElement;
-const maxWidth = 1080;
-const maxHeight = 1080;
-const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-
-compressImage(fileInput.files![0], maxWidth, maxHeight, maxSizeInBytes).then(
-  (compressedBlob) => {
-    if (compressedBlob) {
-      // 在这里可以将压缩后的 Blob 上传到服务器或进行其他操作
-      console.log("压缩后的 Blob:", compressedBlob);
-    }
-  },
-);

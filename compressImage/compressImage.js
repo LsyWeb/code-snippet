@@ -1,4 +1,35 @@
-function compressImage(file, maxWidth, maxHeight, maxSizeInMB, quality = 0.92) {
+// export type CompressImageOptions = {
+//   /**
+//    * 最大宽度
+//    */
+//   maxWidth?: number;
+//   /**
+//    * 最大高度
+//    */
+//   maxHeight?: number;
+//   /**
+//    * 图片质量，仅有 image/jpeg 和 image/webp 类型时才有效
+//    */
+//   quality?: number;
+//   /**
+//    * 图片类型, 默认为 image/jpeg，可选值为 image/png，image/webp；如果是 image/png，则quality参数无效，只能通过宽高来进行压缩
+//    */
+//   imageType?: 'image/jpeg' | 'image/png' | 'image/webp';
+// };
+
+/**
+ *
+ * @param {File} file
+ * @param {CompressImageOptions} options
+ * @returns {Promise<Blob | null>}
+ */
+function compressImage(file, options) {
+  const {
+    maxWidth = 1080,
+    maxHeight = 1080,
+    quality = 0.92,
+    imageType = "image/jpeg",
+  } = options || {};
   return new Promise((resolve, reject) => {
     if (!file) {
       console.error("未选择文件");
@@ -37,7 +68,6 @@ function compressImage(file, maxWidth, maxHeight, maxSizeInMB, quality = 0.92) {
               newWidth = (image.width * maxHeight) / image.height;
             }
           }
-          console.log(newWidth, newHeight);
 
           // 设置 Canvas 大小并绘制图片
           canvas.width = newWidth;
@@ -53,15 +83,10 @@ function compressImage(file, maxWidth, maxHeight, maxSizeInMB, quality = 0.92) {
                 return;
               }
 
-              // 检查 Blob 大小是否小于指定的大小限制
-              if (blob.size > maxSizeInMB * 1024 * 1024) {
-                console.error("压缩后图片大小仍然超过目标大小");
-              }
-
               // 返回压缩后的 Blob
               resolve(blob);
             },
-            "image/jpeg",
+            imageType,
             quality,
           ); // quality 是 JPEG 压缩质量，可以根据需要调整
         };
@@ -71,20 +96,5 @@ function compressImage(file, maxWidth, maxHeight, maxSizeInMB, quality = 0.92) {
     reader.readAsDataURL(file);
   });
 }
-
-// // 示例使用方法
-// const fileInput = document.getElementById("fileInput");
-// const maxWidth = 1080;
-// const maxHeight = 1080;
-// const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-
-// processImage(file, maxWidth, maxHeight, maxSizeInBytes).then(
-//   (compressedBlob) => {
-//     if (compressedBlob) {
-//       // 在这里可以将压缩后的 Blob 上传到服务器或进行其他操作
-//       console.log("压缩后的 Blob:", compressedBlob);
-//     }
-//   },
-// );
 
 export default compressImage;
