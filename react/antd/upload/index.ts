@@ -40,7 +40,7 @@ export const OssUploadFieldProps = (
   options?: OssUploadFieldPropsOptions,
 ): UploadProps => {
   const { isCompress = true, uploadPath, validImage = false } = options || {};
-  const { maxWidth = 1080, maxHeight = 1080 } = options?.compressOptions || {};
+  const { maxWidth = 1080, maxHeight = 1080, ...compressOption } = options?.compressOptions || {};
   return {
     customRequest: async (e: any) => {
       let file = e.file;
@@ -53,6 +53,7 @@ export const OssUploadFieldProps = (
         const blob = await compressImage(file, {
           maxHeight,
           maxWidth,
+          ...compressOption
         });
         if (blob) {
           file = new File([blob], newFileName, { type: blob.type });
