@@ -1,0 +1,76 @@
+.floatButtonContainer {
+  position: fixed;
+  right: 50px;
+  bottom: 100px;
+  z-index: 1000;
+  box-sizing: border-box;
+  :global {
+    .float-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      background-color: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+      &:hover {
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+      }
+      &.group-square {
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        background: none;
+        border-radius: 0;
+        box-shadow: none;
+        &:last-child {
+          border: none;
+        }
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.05) !important;
+          box-shadow: 'none';
+        }
+      }
+      &.float-button-primary {
+        &:hover {
+          filter: brightness(1.05);
+        }
+      }
+      &.float-button-default {
+        &:hover {
+          filter: brightness(0.95);
+        }
+      }
+
+      .float-button-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50%;
+        height: 50%;
+        font-size: 18px;
+      }
+      .float-button-link {
+        color: inherit;
+      }
+    }
+  }
+}
+.floatButtonGroup {
+  position: fixed;
+  right: 50px;
+  bottom: 100px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 50px;
+  border-radius: 8px;
+}
