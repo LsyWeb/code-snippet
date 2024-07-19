@@ -11,6 +11,7 @@
 
 ## react组件
 - [分步表单](./react/StepsForm)
+- [浮窗按钮](./react/FloatButton)
 - [antd组件](./react/antd)
   - [antd中使用阿里云OSS上传的配置](./react/antd/upload/index.ts)
 
