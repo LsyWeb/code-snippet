@@ -8,6 +8,7 @@
 - [无限滚动](./vue/InfiniteScrollList/index.vue)
 - [瀑布流](./vue/Waterfall)
 - [文本省略](./vue/TextEllipsis/)
+- [Tabs标签页（uni-app）](./vue/Tabs)
 
 ## react组件
 - [分步表单](./react/StepsForm)
